@@ -1,0 +1,69 @@
+.earn {
+  > img {
+    position: fixed;
+    top: 50vh;
+    left: calc(50vw - 20px);
+    width: 40px;
+    height: 40px;
+    animation: bounce-star 0.3s infinite ease-in-out;
+    z-index: 10;
+  }
+
+  .fetcher {
+    transition: filter 0.3s linear;
+    &.blur {
+      filter: blur(4px);
+    }
+  }
+
+  > .header {
+    position: relative;
+    width: 100%;
+    min-height: 208px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .title {
+      margin-bottom: 12px;
+      font-size: 26px;
+      font-weight: 500;
+      color: var(--tg-theme-text-color, #000);
+    }
+    .desc {
+      padding: 0 16px;
+      padding-bottom: 1.5px;
+      font-weight: 500;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: var(--tg-theme-text-color, #000);
+    }
+    .desc span:first-child {
+      margin-bottom: 2px;
+    }
+  }
+
+  .tasks-block {
+    padding: 0 16px;
+    margin-bottom: 16px;
+  }
+
+  .block-title {
+    padding-left: 16px;
+    margin-bottom: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.5;
+    color: var(--tg-theme-text-color, #000);
+  }
+}

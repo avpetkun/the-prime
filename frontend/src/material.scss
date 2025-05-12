@@ -1,0 +1,30 @@
+.material {
+  position: relative;
+  overflow: hidden;
+}
+
+.material-spot {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  transition: opacity 0.15s linear;
+  animation: material-show ease-in-out forwards 0.3s;
+  background: var(--tg-theme-text-color, #000);
+}
+.material.dark .material-spot {
+  background: #fff;
+  opacity: 0.15;
+}
+.material-fade {
+  opacity: 0;
+}
+
+@keyframes material-show {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

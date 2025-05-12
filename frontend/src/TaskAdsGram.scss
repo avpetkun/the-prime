@@ -1,0 +1,31 @@
+.task-adsgram {
+  position: relative;
+  --adsgram-task-font-size: 15px; /* min 14px */
+  --adsgram-task-icon-size: 26px; /* min 26px */
+  --adsgram-task-icon-title-gap: 12px; /* min 5px max 40px */
+  --adsgram-task-icon-border-radius: 6px;
+  --adsgram-task-button-width: 70px; /* min 40px */
+
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--tg-theme-text-color, #000);
+
+  .button {
+    margin-right: 16px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(90deg, #3b8cff 0%, #867cff 100%);
+  }
+
+  .reward {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    color: var(--tg-theme-subtitle-text-color, #999999);
+  }
+}
