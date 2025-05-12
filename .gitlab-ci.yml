@@ -1,0 +1,212 @@
+stages:
+  - build
+  - dev
+  - prod
+
+###
+
+build-frontend:
+  stage: build
+  script:
+    - export IMAGE=${CI_REGISTRY_IMAGE}:frontend-${CI_COMMIT_REF_NAME}
+    - docker build -t $IMAGE -f build.frontend.Dockerfile ./frontend
+    - id=$(docker create $IMAGE)
+    - docker cp $id:/srv/dist dist
+    - docker rm $id
+  artifacts:
+    when: on_success
+    paths:
+      - dist
+  tags:
+    - build
+  when: manual
+
+.build:
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - export IMAGE=${CI_REGISTRY_IMAGE}:${SERVICE}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
+    - docker build --pull -t $IMAGE
+      --build-arg GIT_HASH=${CI_COMMIT_SHA}
+      --build-arg GIT_CREDENTIALS=${CI_JOB_TOKEN}
+      -f build.${SERVICE}.Dockerfile ./
+    - docker push $IMAGE
+  tags:
+    - build
+  when: manual
+
+build-api:
+  extends: .build
+  variables:
+    SERVICE: api
+
+build-webhook:
+  extends: .build
+  variables:
+    SERVICE: webhook
+
+build-worker:
+  extends: .build
+  variables:
+    SERVICE: worker
+
+build-support:
+  extends: .build
+  variables:
+    SERVICE: support
+
+###
+
+.frontend:
+  needs:
+    - build-frontend
+  script:
+    - mkdir -p ${WWW}/static
+    - mv dist/static/* ${WWW}/static
+    - mv dist/${ROOT}/* ${WWW}
+  tags:
+    - prime-a
+  when: manual
+
+prod-frontend:
+  stage: prod
+  extends: .frontend
+  variables:
+    WWW: /srv/nginx/www/getprime
+    ROOT: root
+
+dev-frontend:
+  stage: dev
+  extends: .frontend
+  variables:
+    WWW: /srv/nginx/www/getprime_dev
+    ROOT: root_dev
+
+###
+
+.set_configs:
+  script: &set_configs
+    - export API_CONFIG=$(cat config.${ENV}.api.yml)
+    - export WEBHOOK_CONFIG=$(cat config.${ENV}.webhook.yml)
+    - export WORKER_CONFIG=$(cat config.${ENV}.worker.yml)
+    - export SUPPORT_CONFIG=$(cat config.${ENV}.support.yml)
+
+.deploy_all:
+  needs:
+    - build-api
+    - build-webhook
+    - build-worker
+    - build-support
+  script:
+    - *set_configs
+    - sh ./scripts/set-image.sh compose.prod.yml api
+    - sh ./scripts/set-image.sh compose.prod.yml webhook
+    - sh ./scripts/set-image.sh compose.prod.yml worker
+    - sh ./scripts/set-image.sh compose.prod.yml support
+    - mkdir -p /srv/${DIR}
+    - mv compose.prod.yml /srv/${DIR}/docker-compose.yml
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - cd /srv/${DIR} && docker compose up -d
+  tags:
+    - prime-a
+  when: manual
+
+.deploy_one:
+  script:
+    - *set_configs
+    - sh ./scripts/set-image.sh /srv/${DIR}/docker-compose.yml ${SERVICE}
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - cd /srv/${DIR} && docker compose up -d
+    - sleep 3
+    - docker logs ${DIR}-${SERVICE}-1
+  tags:
+    - prime-a
+  when: manual
+
+.deploy_one_dev:
+  stage: dev
+  extends: .deploy_one
+  variables:
+    ENV: dev
+    DIR: theprime_dev
+
+.deploy_one_prod:
+  stage: prod
+  extends: .deploy_one
+  variables:
+    ENV: prod
+    DIR: theprime
+
+###
+
+dev-all:
+  stage: dev
+  extends: .deploy_all
+  variables:
+    DIR: theprime_dev
+    ENV: dev
+
+dev-api:
+  extends: .deploy_one_dev
+  variables:
+    SERVICE: api
+  needs:
+    - build-api
+
+dev-webhook:
+  extends: .deploy_one_dev
+  variables:
+    SERVICE: webhook
+  needs:
+    - build-webhook
+
+dev-worker:
+  extends: .deploy_one_dev
+  variables:
+    SERVICE: worker
+  needs:
+    - build-worker
+
+dev-support:
+  extends: .deploy_one_dev
+  variables:
+    SERVICE: support
+  needs:
+    - build-support
+
+###
+
+prod-all:
+  stage: prod
+  extends: .deploy_all
+  variables:
+    DIR: theprime
+    ENV: prod
+
+prod-api:
+  extends: .deploy_one_prod
+  variables:
+    SERVICE: api
+  needs:
+    - build-api
+
+prod-webhook:
+  extends: .deploy_one_prod
+  variables:
+    SERVICE: webhook
+  needs:
+    - build-webhook
+
+prod-worker:
+  extends: .deploy_one_prod
+  variables:
+    SERVICE: worker
+  needs:
+    - build-worker
+
+prod-support:
+  extends: .deploy_one_prod
+  variables:
+    SERVICE: support
+  needs:
+    - build-support

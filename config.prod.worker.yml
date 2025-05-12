@@ -1,0 +1,75 @@
+postgres:
+  user: postgres
+  pass: justeunclou
+  addr: theprime-postgres-1:5432
+  name: theprime
+
+redis:
+  addr: theprime-redis-1:6379
+  db: 0
+
+nats:
+  addr: nats://theprime-nats-1:4222
+
+ton:
+  deposit_wallet: $DEPOSIT_WALLET
+
+fragment:
+  wallet_seed: $WALLET_SEED
+  auth_cookie: 'stel_ssid=wefweffewfwefwf_fwefwefew; stel_dt=-1233; stel_token=iwef9hf923hf239fh29fh2f92hf92hf9fhfh8fh298hf329f; stel_ton_token=FHWE(UHewuhhu*FUHEW*FHwhufwhuefeiwufhuwif-IgREGxgtqXBmKGgBxOz1WSnkqKIQ17-owenfpw9ufpe9ufNKJNISEJFNLEWIFNnfewjkfnijfw-'
+  min_balance: 5.0
+  chatGifts: -2343243423
+
+referral:
+  total_bonus: 10
+  levels: [50, 25, 15, 10]
+
+workers:
+  webhook: 20
+  users: 5
+  tasks: 20
+  chats: 5
+  checks: 5
+
+bot:
+  token: $BOT_TOKEN
+  rate_msg_limit: 25
+  rate_api_limit: 25
+
+miniapp:
+  webapp_url: https://miniapp.getprime.me
+  miniapp_url: https://t.me/YourPrimeBot/get
+  support_url: https://t.me/The_Prime_Support_bot
+  hello_image: https://miniapp.getprime.me/prime_640x360.JPEG
+  en:
+    webapp_button: 🎁 Get Prime
+    support_button: 🤖 Support
+    hello_text: |
+      <b>Welcome!</b>
+
+      Earn <b>Telegram Stars</b> or <b>Telegram Premium</b> by completing simple tasks in this bot.
+
+      How It Works:
+      1. Select a task from the list
+      2. Follow the instructions and complete it
+      3. Get rewarded for your efforts
+
+      Start now and enjoy exclusive Telegram benefits!
+    invite_text: Earn Telegram Stars or Telegram Premium by completing simple tasks in this bot
+    invite_button: Tap to Get
+  ru:
+    webapp_button: 🎁 Получить премиум
+    support_button: 🤖 Поддержка
+    hello_text: |
+      <b>Добро пожаловать!</b>
+
+      В этом боте вы можете выполнять простые задания и получать <b>Telegram Stars</b> или <b>Telegram Premium</b> в качестве награды.  
+
+      Как это работает?  
+      1. Выберите задание из списка.  
+      2. Выполните его согласно инструкции.  
+      3. Получите заслуженное вознаграждение!  
+
+      Начните прямо сейчас и воспользуйтесь эксклюзивными возможностями Telegram!
+    invite_text: Заработай Telegram Stars или Telegram Premium по завершению задач в этом боте
+    invite_button: Нажми чтобы получить

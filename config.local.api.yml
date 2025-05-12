@@ -1,0 +1,37 @@
+postgres:
+  user: bot
+  pass: password
+  addr: 127.0.0.1:5434
+  name: theprime
+
+redis:
+  addr: 127.0.0.1:6379
+  db: 0
+
+nats:
+  addr: nats://127.0.0.1:4222
+
+http:
+  public_port: 8093
+  private_port: 8094
+
+bot:
+  token: $BOT_TOKEN
+  rate_msg_limit: 25
+  rate_api_limit: 25
+
+miniapp:
+  webapp_url: https://miniapp-dev.getprime.me
+  miniapp_url: https://t.me/NotYourPrimeDevBot/get
+  support_url: https://t.me/The_Prime_Support_bot
+  invite_image: https://miniapp-dev.getprime.me/prime_640x360.JPEG
+  en:
+    invite_text: Earn Telegram Stars or Telegram Premium by completing simple tasks in this bot
+    invite_button: Tap to Get
+  ru:
+    invite_text: Заработай Telegram Stars или Telegram Premium по завершению задач в этом боте
+    invite_button: Нажми чтобы получить
+
+ton:
+  deposit_wallet: $DEPOSIT_WALLET
+  comment_prefix: 'tg:NotYourPrimeDevBot'

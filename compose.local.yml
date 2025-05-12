@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - 5434:5432
+    volumes:
+      - .postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=bot
+      - POSTGRES_DB=theprime
+
+  redis:
+    image: redis:bookworm
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - .redis:/data
+    command: [ "redis-server", "--appendonly", "yes", "--appendfilename", "appendonly.aof", "--dir", "/data" ]
+
+  nats:
+    image: nats:2.10.26
+    command: [ "-js", "-m", "8222", "-sd", "/data" ]
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - .nats:/data

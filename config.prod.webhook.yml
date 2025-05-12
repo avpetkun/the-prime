@@ -1,0 +1,2 @@
+nats_addr: nats://theprime-nats-1:4222
+http_port: 80
